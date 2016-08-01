@@ -66,6 +66,7 @@ Task serialCommandTask(1000, TASK_FOREVER, &serialCommand);
 #define COMMAND_SIZE 3
 #define SERVO_SPEED 30
 
+// TODO ALSO THERE CAN BE SIREN COMMAND!
 void serialCommand() {
 	// COMMANDS can be turn camera and turn smth on/off
 	// On/off are bits and hence one byte can contain 8 switches
@@ -155,6 +156,7 @@ void setup() {
 	runner.addTask(serialCommandTask);
 
 	// Sensor status task
+	humiditySensor.begin();
 	runner.addTask(readSensors);
 
 	// Starting
