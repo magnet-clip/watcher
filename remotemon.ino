@@ -1,3 +1,4 @@
+#include <DHT.h>
 #include <VarSpeedServo.h>
 #include <TaskScheduler.h>
 #include <DirectIO.h>
@@ -26,8 +27,8 @@ Scheduler runner;
 // 15 (A1)			-> Gas sensor
 // 16 (A2)			-> Light sensor
 // 17 (A3)			-> Device 8
-// 18 (A4, SDA) 
-// 19 (A5, SCL)
+// 18 (A4, SDA)		-> 
+// 19 (A5, SCL)		-> DHT sensor
 //
 //-------------------------------------------
 
@@ -91,7 +92,6 @@ void serialCommand() {
 	}
 }
 
-
 //------------------------
 // Sensor read stat task
 //------------------------
@@ -105,13 +105,15 @@ Task readSensors(1200, TASK_FOREVER, &reader); // add &reader, &runner, true to 
 
 #define MOTION_PIN 3
 #define CAMERA_ALLOWED_PIN 4
+#define DHT_PIN 19
 
 Input<MOTION_PIN> motionSensor;
 Input<CAMERA_ALLOWED_PIN> cameraAllowed;
 
-// todo add dht11 and dallas DS18S20 (use libs)
-
+DHT humiditySensor(DHT_PIN, DHT11);
+ 
 volatile int co2, gas, motion, camAllowed, light;
+volatile float humidity, temperature;
 
 void reader() {
 	co2 = analogRead(CO2PIN);
@@ -119,6 +121,9 @@ void reader() {
 	light = analogRead(LIGHTPIN);
 	motion = motionSensor.read();
 	camAllowed = cameraAllowed.read();
+
+	humidity = humiditySensor.readHumidity();
+	temperature = humiditySensor.readTemperature();
 
 	// todo replace strings with bytes (first map from 1024 to 256, then send as bytes)
 	Serial.print(co2);
@@ -130,6 +135,7 @@ void reader() {
 	Serial.println(motion);
 	Serial.print(";");
 	Serial.println(cameraAllowed);
+	// todo send humidity, temperature 
 }
 
 
@@ -147,7 +153,6 @@ void setup() {
 	horServo.attach(HOR_SERVO_PIN);
 	verServo.attach(VER_SERVO_PIN);
 	runner.addTask(serialCommandTask);
-
 
 	// Sensor status task
 	runner.addTask(readSensors);
