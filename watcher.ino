@@ -136,12 +136,11 @@ void reader() {
 	Serial.print(motion);
 	Serial.print(";");
 	Serial.print(cameraAllowed);
-  Serial.print(";");
-  Serial.print(humidity);
-  Serial.print(";");
-  Serial.print(temperature);
-  Serial.println("");
-	// todo send humidity, temperature 
+	Serial.print(";");
+	Serial.print(humidity);
+	Serial.print(";");
+	Serial.print(temperature);
+	Serial.println("");
 }
 
 
