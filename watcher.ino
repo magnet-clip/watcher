@@ -66,6 +66,7 @@ Task serialCommandTask(1000, TASK_FOREVER, &serialCommand);
 #define COMMAND_SIZE 3
 #define SERVO_SPEED 30
 
+byte hor_pos = 90, ver_pos = 90;
 // TODO ALSO THERE CAN BE SIREN COMMAND!
 void serialCommand() {
 	// COMMANDS can be turn camera and turn smth on/off
@@ -79,8 +80,12 @@ void serialCommand() {
 		while (Serial.available())
 			Serial.read();
 
-		auto hor_pos = constrain(buffer[0], 0, 180);
-		auto ver_pos = constrain(buffer[1], 0, 180);
+		Serial.println("Got some command");
+
+	  hor_pos = constrain(buffer[0], 0, 180);
+		ver_pos = constrain(buffer[1], 0, 180);
+		Serial.println(hor_pos);
+		Serial.println(ver_pos);
 		horServo.write(hor_pos, SERVO_SPEED, true);
 		verServo.write(ver_pos, SERVO_SPEED, true);
 
@@ -90,6 +95,9 @@ void serialCommand() {
 			mask <<= 1;
 			devices[i] = deviceStates & mask;
 		}
+	} else {
+    horServo.write(hor_pos, SERVO_SPEED, true);
+    verServo.write(ver_pos, SERVO_SPEED, true);    
 	}
 }
 
