@@ -157,7 +157,7 @@ void setup() {
 	runner.init();
 
 	// Common init
-	Serial.begin(9600);
+	Serial.begin(38400);
 
 	// Blink task init
 	runner.addTask(blinkTask);
